@@ -51,6 +51,13 @@
 		# The stack grows DOWNWARDS - that's why start at top
 		mov $stack_top, %esp 
 
+		# We want to get the "multiboot info" from the bootloader
+		# EBP contains the address of this info
+		# This will become an argument to main
+		# eax will contain the multiboot magic number - argument #2
+		push %eax
+		push %ebx
+
 		# That's all! Now, just call the C start function
 		call kernel_main
 

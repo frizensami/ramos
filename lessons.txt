@@ -28,3 +28,13 @@ Our project structure:
 1. start.s    --> x86 assembly, starts our kernel, sets up x86 environment
 2. kernel.c   --> our actual kernel that runs after being called by start.s
 3. linker.ld  --> tells our compiler how to create the kernel executable
+
+Most of the work here involved writing code to output to the terminal, and getting atoi/itoa to work
+to convert integers to strings.
+
+I allowed the text on screen to scroll - just move all the lines up by 1.
+
+I also experimented with loading certain registers DIRECTLY as variables. This works surprisingly, but is also dangerous. Modifying %esp when it is mapped to a variable causes a crash of QEMU. 
+But it also works as expected. Printing eax initially gives 0, but after a function returns 5, it displays as 5 afterwards. Very interesting, but expected.
+
+Now, to get the memory available by the system, we need to use the Multiboot scheme to get information from the BIOS that the kernel cannot get by itself. By pushing eax and ebx onto the stack before calling the kernel main function in start.s, we can receive a lot of information from the BIOS. This is part of the Multiboot specification.
