@@ -1,0 +1,30 @@
+Boot Sequence on OSDev: https://wiki.osdev.org/Boot_Sequence
+
+Following tutorial: https://wiki.osdev.org/User:Zesterer/Bare_Bones
+
+What we are building
+- Simple kernel that just prints text on the screen
+- Target: x86 arch
+- We will use GRUB to load the kernel into memory for use
+- GRUB will also set up protected mode for us
+    - Interestingly, GRUB does this for other OSs, but not for Linux
+    - GRUB RUNS in protected mode, but switches back to Real before booting kernel (for Linux)
+    - https://stackoverflow.com/questions/4821911/does-grub-switch-to-protected-mode
+
+
+
+
+Step 1: Build GCC Cross Compiler for i686-elf (https://wiki.osdev.org/GCC_Cross-Compiler)
+- I am on Linux, and have most of the EXECUTABLES required (gcc, etc)
+- I need to download a bunch of SOURCE CODE that we need to compile for a different arch
+    - I needed to download GCC and Binutils source code
+    - Rest of the executables (GNU GMP, MPFR...) were already installed
+- Follow instructions to build binutils, then gcc. New gcc/binutils needs to be added to the path as said in tutorial.
+
+Step 2: Understanding "Freestanding"
+- Writing "freestanding" code. We don't have access to a lot of things that are normally available to C code when it's written inside an OS (files, printf, etc). Only have basic GCC headers. 
+
+Our project structure:
+1. start.s    --> x86 assembly, starts our kernel, sets up x86 environment
+2. kernel.c   --> our actual kernel that runs after being called by start.s
+3. linker.ld  --> tells our compiler how to create the kernel executable
