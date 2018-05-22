@@ -1,1 +1,1 @@
-qemu-system-i386 -kernel mykernel.elf
+qemu-system-i386 -m 1G -kernel mykernel.elf

@@ -34,7 +34,31 @@ to convert integers to strings.
 
 I allowed the text on screen to scroll - just move all the lines up by 1.
 
-I also experimented with loading certain registers DIRECTLY as variables. This works surprisingly, but is also dangerous. Modifying %esp when it is mapped to a variable causes a crash of QEMU. 
+I also experimented with loading certain registers DIRECTLY as variables. This works, surprisingly, but is also dangerous. Modifying %esp when it is mapped to a variable causes a crash of QEMU. 
 But it also works as expected. Printing eax initially gives 0, but after a function returns 5, it displays as 5 afterwards. Very interesting, but expected.
 
 Now, to get the memory available by the system, we need to use the Multiboot scheme to get information from the BIOS that the kernel cannot get by itself. By pushing eax and ebx onto the stack before calling the kernel main function in start.s, we can receive a lot of information from the BIOS. This is part of the Multiboot specification.
+
+Multiboot memory: Lower - 639, Upper - 129920
+What do these numbers mean? 
+https://www.gnu.org/software/grub/manual/multiboot/multiboot.html says:
+1. mem_lower indicates AMOUNT of LOWER MEMORY available in kilobytes [639 kilobytes in our case]
+--> Max value is supposedly 640 kilobytes (why?)
+In contrast, the last 384 kB of
+lower memory was not backed by RAM, but rather reserved for video memory,
+memory mapped I/O, and the BIOS ROM. In real mode, this reserved
+area appears at the top of the real mode address space. However in protected
+mode, the reserved area forms a memory hole between 640 kB and 1 MB that
+must not be disturbed (except for video memory) by either the bootloader or
+the operating system -- https://www.cs.cmu.edu/~410-s07/p4/p4-boot.pdf
+--> Start at address 0
+2. mem_upper indicates AMOUNT of UPPER MEMORY available in kilobytes [129920 kilobytes in our case]
+--> Starts at address 1MB
+--> QEMU default is 128 MB of RAM 
+--> IF i set -m switch on QEMU to 1G (1GB of RAM) --> higher/upper val is now: 1047424 kilobytes
+--> Specifically: 1047424 KiB is 0.998... GiB. Why isn't this 1GB?
+
+
+
+Makefile creation: https://wiki.osdev.org/Makefile, https://forum.osdev.org/viewtopic.php?f=13&t=23472
+- DO NOT include *.c files after starting to use headers. Causes pain due to multiple definitions.
