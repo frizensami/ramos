@@ -21,9 +21,12 @@
 #ifndef LIBK_H
 #define LIBK_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 int strlen(const char* s);
 void reverse(char s[]);
-void itoa(char s[], int n);
+void itoa(char s[], uint64_t n);
 void busysleep_tiny(void);
 
 #endif

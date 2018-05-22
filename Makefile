@@ -43,4 +43,4 @@ clean:
 	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES) start.o)
 
 run: ramos.elf
-	qemu-system-i386 -m 1G -kernel ramos.elf
+	qemu-system-i386 -m 4G -kernel ramos.elf

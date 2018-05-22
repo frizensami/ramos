@@ -19,6 +19,7 @@
       *  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       */
 #include "libk.h"
+
 /* Kernel library strlen - count until null byte */
 int strlen(const char* s) {
     int i = 0;
@@ -41,9 +42,9 @@ void reverse(char s[])
 
 /* itoa:  convert n to characters in s */
 /* This is the K&R standard */
-void itoa(char s[], int n)
+void itoa(char s[], uint64_t n)
 {
-    int i, sign;
+    uint64_t i, sign;
 
     if ((sign = n) < 0) /* record sign */
         n = -n; /* make n positive */

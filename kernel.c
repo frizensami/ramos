@@ -29,6 +29,7 @@
 #include "multiboot.h"
 #include "multiboot_parser.h"
 #include "libk.h"
+#include "printf.h"
 
 
 // Do some basic checking on this code so that it's used correctly
@@ -46,8 +47,7 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     term_init();
 
     // Basic boot info    
-    term_printstr("Hello world, from RamOS!\n");
-    
+    printf("--------------------------------[RAMOS BOOTING]--------------------------------\n");
     print_multiboot_info(mbd, magic);
 
     register int eax asm("eax");
@@ -66,7 +66,7 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     int cEsp = esp;
 
 
-
+/*
     char buffer[34];
     term_printstr("eax value: \n");
     itoa(buffer, cEax);
@@ -96,6 +96,7 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     itoa(buffer, cEsp);
     term_printstr(buffer);
     term_printstr("\n");
+*/
     /*
     for (int i = 0; i < 105; i++) {
         term_printstr("This is row: ");
