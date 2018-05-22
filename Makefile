@@ -23,19 +23,24 @@ ALLFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
 
 # This is to avoid a situation where we have a file called "all" or "clean"
 # And make does nothing, since the "all" file already exists
-.PHONY: all clean
+.PHONY: all clean run
 
 all: ramos.elf
 
 ramos.elf: start.o linker.ld $(OBJFILES) 
-	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) start.o  -o mykernel.elf -lgcc
+	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) start.o  -o ramos.elf -lgcc
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
-
 
 start.o: start.s
 # Translation: use the CC program with flags FLAGS
 # -c input file is first dependancy in this rule ($<)
 # -o output file is the name of this file ($@)
 	@$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES) start.o)
+
+run: ramos.elf
+	qemu-system-i386 -m 1G -kernel ramos.elf
