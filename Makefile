@@ -27,8 +27,8 @@ ALLFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
 
 all: ramos.elf
 
-ramos.elf: start.o gdt.o linker.ld $(OBJFILES) 
-	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) start.o gdt.o -o ramos.elf -lgcc
+ramos.elf: start.o gdt.o interrupt.o linker.ld $(OBJFILES) 
+	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) start.o gdt.o interrupt.o -o ramos.elf -lgcc
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
@@ -41,6 +41,11 @@ start.o: start.s
 
 gdt.o: gdt.s
 	@$(CC) $(CFLAGS) -c $< -o $@
+
+interrupt.o: interrupt.s
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+
 
 
 clean:

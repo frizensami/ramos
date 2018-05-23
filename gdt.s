@@ -1,5 +1,6 @@
 # Export the gdt_flush function to replace the existing GDTR value with our own
 .global gdt_flush
+.global idt_flush
 
 # Our argument to gdt_flush is a 32 bit pointer address that is passed onto the stack
 # It's essentially pushed onto the stack with `push gdt_ptr`
@@ -40,6 +41,12 @@ gdt_flush:
 
 # Flush is a local label should not be exported to symbol table. So it has a dot.
 .flush:
+    ret
+
+
+idt_flush:
+    mov 4(%esp), %eax # Same as before - copy over the idt pointer
+    lidt (%eax)       # Loads IDT location
     ret
 
 

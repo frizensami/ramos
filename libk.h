@@ -28,5 +28,8 @@ int strlen(const char* s);
 void reverse(char s[]);
 void itoa(char s[], uint64_t n);
 void busysleep_tiny(void);
+// Fills the first n bytes of the memory area pointed to by s with the constant byte c.
+void* memset(void* s, int c, size_t n);
+
 
 #endif

@@ -2,13 +2,18 @@
 
 // Structure and code taken from http://www.jamesmolloy.co.uk/tutorial_html/4.-The%20GDT%20and%20IDT.html
 
-// Assembly code in gdt.s that flushes the GDT and installs our new one
+// Assembly code in gdt.s that flushes the GDT/IDT and installs our new one
 extern void gdt_flush(uint32_t);
-
+extern void idt_flush(uint32_t);
 // Segments we will install: null segment, kernel code seg, kernel data seg, user code seg, user data seg
 gdt_entry_t gdt_entries[5];
 // Pointer that we need to pass to the GDT register
 gdt_ptr_t   gdt_ptr;
+
+// 256 possible IDT entries for the 256 interrupts possible
+idt_entry_t idt_entries[256];
+// Same as GDT - pointer to the IDT entries
+idt_ptr_t   idt_ptr;
 
 // Set the value of one GDT entry.
 static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
@@ -54,10 +59,41 @@ static void gdt_init(void) {
     */
 }
 
+static void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
+{
+   idt_entries[num].base_lo = base & 0xFFFF;
+   idt_entries[num].base_hi = (base >> 16) & 0xFFFF;
+
+   idt_entries[num].sel     = sel;
+   idt_entries[num].always0 = 0;
+   // TODO:
+   // We must uncomment the OR below when we get to using user-mode.
+   // It sets the interrupt gate's privilege level to 3.
+   idt_entries[num].flags   = flags /* | 0x60 */;
+}
+
+
+static void idt_init()
+{
+    // There are 256 possible interrupt numbers
+    idt_ptr.limit = sizeof(idt_entry_t) * 256 - 1;
+    idt_ptr.base = (uint32_t)&idt_entries;
+
+    memset(&idt_entries, 0, sizeof(idt_entry_t) * 256);
+
+    idt_set_gate(0, (uint32_t)isr0, 0x08, 0x8E);
+    idt_set_gate(1, (uint32_t)isr1, 0x08, 0x8E);
+    //idt_set_gate(31, (uint32_t)isr32, 0x08, 0x8E);
+
+    idt_flush((uint32_t)&idt_ptr);
+
+    printf("IDT Initialization complete!\n");
+}
 
 
 
 
 void descriptor_tables_init(void) {
     gdt_init();
+    idt_init();
 }

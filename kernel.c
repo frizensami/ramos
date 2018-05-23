@@ -56,6 +56,9 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // Set up the GDT and IDT!
     descriptor_tables_init();
 
+    asm volatile ("int $0x1");
+
+
     register int eax asm("eax");
     register int ebx asm("ebx");
     register int ecx asm("ecx");
