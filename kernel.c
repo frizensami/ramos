@@ -48,6 +48,8 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     // Basic boot info    
     printf("--------------------------------[RAMOS BOOTING]--------------------------------\n");
+
+    // Print out all information given from the Multiboot-compliant bootloader header
     print_multiboot_info(mbd, magic);
 
     register int eax asm("eax");
@@ -65,49 +67,4 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     int cEcx = ecx;
     int cEsp = esp;
 
-
-/*
-    char buffer[34];
-    term_printstr("eax value: \n");
-    itoa(buffer, cEax);
-    term_printstr(buffer);
-    term_printstr("\n");
-
-    strlen("hello");
-
-    // eax should be 5!
-    cEax = eax;
-    term_printstr("eax value after: \n");
-    itoa(buffer, cEax);
-    term_printstr(buffer);
-    term_printstr("\n");
-
-    term_printstr("ebx value: \n");
-    itoa(buffer, cEbx);
-    term_printstr(buffer);
-    term_printstr("\n");
-
-    term_printstr("ecx value: \n");
-    itoa(buffer, cEcx);
-    term_printstr(buffer);
-    term_printstr("\n");
-
-    term_printstr("esp value: \n");
-    itoa(buffer, cEsp);
-    term_printstr(buffer);
-    term_printstr("\n");
-*/
-    /*
-    for (int i = 0; i < 105; i++) {
-        term_printstr("This is row: ");
-        char buffer[4];
-        itoa(buffer, i);
-        term_printstr(buffer);
-        term_printstr("\n");
-
-        // sleep for a sec
-        busysleep_tiny();
-
-    }
-    */
 }
