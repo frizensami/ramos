@@ -1,4 +1,4 @@
-# AT&T Syntax
+# AT&T Syntax - GNU AS or GAS
 # start.s: assembly code to set up x86 environment and start the kernel
 
 # kernel_main is a symbol external to this .s file

@@ -27,8 +27,8 @@ ALLFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
 
 all: ramos.elf
 
-ramos.elf: start.o linker.ld $(OBJFILES) 
-	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) start.o  -o ramos.elf -lgcc
+ramos.elf: start.o gdt.o linker.ld $(OBJFILES) 
+	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) start.o gdt.o -o ramos.elf -lgcc
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
@@ -39,8 +39,17 @@ start.o: start.s
 # -o output file is the name of this file ($@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
+gdt.o: gdt.s
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+
 clean:
-	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES) start.o)
+	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES) start.o gdt.o)
 
 run: ramos.elf
 	qemu-system-i386 -m 4G -kernel ramos.elf
+
+run-debug: ramos.elf
+	qemu-system-i386 -m 4G -kernel ramos.elf -gdb tcp::9000 -S
+
+

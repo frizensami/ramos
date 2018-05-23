@@ -30,6 +30,7 @@
 #include "multiboot_parser.h"
 #include "libk.h"
 #include "printf.h"
+#include "descriptor_tables.h"
 
 
 // Do some basic checking on this code so that it's used correctly
@@ -51,6 +52,9 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     // Print out all information given from the Multiboot-compliant bootloader header
     print_multiboot_info(mbd, magic);
+
+    // Set up the GDT and IDT!
+    descriptor_tables_init();
 
     register int eax asm("eax");
     register int ebx asm("ebx");
