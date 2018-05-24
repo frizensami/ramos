@@ -32,7 +32,7 @@ LINKSCRIPT  := boot/linker.ld
 all: ramos.elf
 
 ramos.elf: $(LINKSCRIPT) $(OBJFILES) 
-	@$(CC) -ffreestanding -nostdlib -g -T $(LINKSCRIPT) $(OBJFILES) -o ramos.elf -lgcc
+	$(CC) -ffreestanding -nostdlib -g -T $(LINKSCRIPT) $(OBJFILES) -o ramos.elf -lgcc
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
@@ -57,7 +57,7 @@ ramos.elf: $(LINKSCRIPT) $(OBJFILES)
 
 
 clean:
-	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES))
+	$(RM) $(wildcard $(OBJFILES) $(DEPFILES))
 
 run: ramos.elf
 	qemu-system-i386 -m 4G -kernel ramos.elf
