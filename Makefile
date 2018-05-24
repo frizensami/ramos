@@ -14,12 +14,15 @@ WARNINGS := -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align \
 CFLAGS := -g -std=gnu99 -ffreestanding $(WARNINGS)
 
 # The types of files we will be compiling
-SRCFILES := $(shell find $(PROJDIRS) -type f -name "*.c")
-HDRFILES := $(shell find $(PROJDIRS) -type f -name "*.h")
-OBJFILES := $(patsubst %.c,%.o,$(SRCFILES))
+SRCFILES    := $(shell find $(PROJDIRS) -type f -name "*.c")
+ASMFILES    := $(shell find $(PROJDIRS) -type f -name "*.s")
+HDRFILES    := $(shell find $(PROJDIRS) -type f -name "*.h")
+OBJASMFILES := $(patsubst %.s,%.o,$(ASMFILES))
+OBJCFILES   := $(patsubst %.c,%.o,$(SRCFILES))
+OBJFILES    := $(OBJCFILES) $(OBJASMFILES)
 # Depfiles is special: GCC will generate .d dependancy files so that Make can parse them
 DEPFILES := $(patsubst %.c,%.d,$(SRCFILES))
-ALLFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
+ALLFILES := $(SRCFILES) $(ASMFILES) $(HDRFILES) $(AUXFILES)
 
 # This is to avoid a situation where we have a file called "all" or "clean"
 # And make does nothing, since the "all" file already exists
@@ -27,29 +30,33 @@ ALLFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
 
 all: ramos.elf
 
-ramos.elf: start.o gdt.o interrupt.o linker.ld $(OBJFILES) 
-	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) start.o gdt.o interrupt.o -o ramos.elf -lgcc
+ramos.elf: linker.ld $(OBJFILES) 
+	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) -o ramos.elf -lgcc
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
-start.o: start.s
-# Translation: use the CC program with flags FLAGS
-# -c input file is first dependancy in this rule ($<)
-# -o output file is the name of this file ($@)
+%.o: %.s Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-gdt.o: gdt.s
-	@$(CC) $(CFLAGS) -c $< -o $@
 
-interrupt.o: interrupt.s
-	@$(CC) $(CFLAGS) -c $< -o $@
+# start.o: start.s
+# # Translation: use the CC program with flags FLAGS
+# # -c input file is first dependancy in this rule ($<)
+# # -o output file is the name of this file ($@)
+# 	@$(CC) $(CFLAGS) -c $< -o $@
+# 
+# gdt.o: gdt.s
+# 	@$(CC) $(CFLAGS) -c $< -o $@
+# 
+# interrupt.o: interrupt.s
+# 	@$(CC) $(CFLAGS) -c $< -o $@
 
 
 
 
 clean:
-	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES) start.o gdt.o)
+	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES))
 
 run: ramos.elf
 	qemu-system-i386 -m 4G -kernel ramos.elf
