@@ -21,8 +21,8 @@
 
 
 #include "multiboot_parser.h"
-#include "libk.h"
-#include "terminal.h"
+#include "../../lib/common.h"
+#include "../../lib/libk.h"
 
 void print_multiboot_info(multiboot_info_t* mbd, unsigned int magic) {
    printf("Accessing Multiboot Info...\n");

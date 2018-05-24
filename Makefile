@@ -21,17 +21,18 @@ OBJASMFILES := $(patsubst %.s,%.o,$(ASMFILES))
 OBJCFILES   := $(patsubst %.c,%.o,$(SRCFILES))
 OBJFILES    := $(OBJCFILES) $(OBJASMFILES)
 # Depfiles is special: GCC will generate .d dependancy files so that Make can parse them
-DEPFILES := $(patsubst %.c,%.d,$(SRCFILES))
-ALLFILES := $(SRCFILES) $(ASMFILES) $(HDRFILES) $(AUXFILES)
+DEPFILES    := $(patsubst %.c,%.d,$(SRCFILES))
+ALLFILES    := $(SRCFILES) $(ASMFILES) $(HDRFILES) $(AUXFILES)
 
+LINKSCRIPT  := boot/linker.ld
 # This is to avoid a situation where we have a file called "all" or "clean"
 # And make does nothing, since the "all" file already exists
 .PHONY: all clean run
 
 all: ramos.elf
 
-ramos.elf: linker.ld $(OBJFILES) 
-	@$(CC) -ffreestanding -nostdlib -g -T linker.ld $(OBJFILES) -o ramos.elf -lgcc
+ramos.elf: $(LINKSCRIPT) $(OBJFILES) 
+	@$(CC) -ffreestanding -nostdlib -g -T $(LINKSCRIPT) $(OBJFILES) -o ramos.elf -lgcc
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@

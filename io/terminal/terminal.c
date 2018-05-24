@@ -19,10 +19,6 @@
       *  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       */
      
-// GCC provides these header files automatically
-// They give us access to useful things like fixed-width types
-#include <stddef.h>
-#include <stdint.h>
 #include "terminal.h"
 
 /****

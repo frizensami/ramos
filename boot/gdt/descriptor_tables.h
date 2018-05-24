@@ -1,10 +1,8 @@
 #ifndef DESCRIPTOR_TABLES_H
 #define DESCRIPTOR_TABLES_H
 
-#include <stddef.h>
-#include <stdint.h>
-#include "libk.h"
-#include "printf.h"
+#include "../../lib/common.h"
+#include "../../lib/libk.h"
 
 // Structure and code: http://www.jamesmolloy.co.uk/tutorial_html/4.-The%20GDT%20and%20IDT.html
 

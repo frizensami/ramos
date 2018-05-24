@@ -24,7 +24,7 @@
 	replace outbyte(c) by your own function call.
 */
 
-#include "terminal.h"
+#include "../io/terminal/terminal.h"
 
 static int putchar(char c) {
     term_putchar(c);

@@ -23,14 +23,11 @@
 
 // GCC provides these header files automatically
 // They give us access to useful things like fixed-width types
-#include <stddef.h>
-#include <stdint.h>
-#include "terminal.h"
-#include "multiboot.h"
-#include "multiboot_parser.h"
-#include "libk.h"
-#include "printf.h"
-#include "descriptor_tables.h"
+#include "../lib/common.h"
+#include "../io/terminal/terminal.h"
+#include "./multiboot/multiboot_parser.h"
+#include "../lib/libk.h"
+#include "./gdt/descriptor_tables.h"
 
 
 // Do some basic checking on this code so that it's used correctly

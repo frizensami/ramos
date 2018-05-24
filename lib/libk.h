@@ -21,8 +21,8 @@
 #ifndef LIBK_H
 #define LIBK_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include "common.h"
+#include "printf.h"
 
 int strlen(const char* s);
 void reverse(char s[]);

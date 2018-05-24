@@ -23,8 +23,7 @@
 #define TERMINAL_H
 
 
-#include <stddef.h>
-#include <stdint.h>
+#include "../../lib/common.h"
 
 // For internal use
 void term_scroll(void);

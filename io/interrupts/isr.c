@@ -1,5 +1,5 @@
 #include "isr.h"
-#include "printf.h"
+#include "../../lib/printf.h"
 
 void isr_handler(registers_t regs)
 {
