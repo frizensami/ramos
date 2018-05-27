@@ -23,6 +23,7 @@
 
 #include "common.h"
 #include "printf.h"
+#include "asm.h"
 
 int strlen(const char* s);
 void reverse(char s[]);

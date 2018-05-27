@@ -28,6 +28,8 @@
 #include "./multiboot/multiboot_parser.h"
 #include "../lib/libk.h"
 #include "./gdt/descriptor_tables.h"
+#include "../io/keyboard/keyboard.h"
+#include "../io/timer/timer.h"
 
 
 // Do some basic checking on this code so that it's used correctly
@@ -53,9 +55,27 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // Set up the GDT and IDT!
     descriptor_tables_init();
 
-    asm volatile ("int $0x1");
+    // Set up our keyboard to fire off interrupts
+    keyboard_init();
 
+    // Set up a timer
+    timer_init(50000);
 
+    // Unmask all interrupts
+    //outb(0x21, 0xff);
+    //outb(0xa1, 0xff);
+
+    // These masks work: setting 0x21, 0x01 masks the timer interrupt (bit 0)
+    outb(0x21,0x00);
+    outb(0xa1,0x00);
+
+    // Ensure interrupts are on -- we DO NOT get any interrupts if this is not on!
+    asm volatile("sti");
+
+    //asm volatile ("int $0x1");
+    //asm volatile ("int $33");
+
+/*
     register int eax asm("eax");
     register int ebx asm("ebx");
     register int ecx asm("ecx");
@@ -70,5 +90,5 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     int cEbx = ebx;
     int cEcx = ecx;
     int cEsp = esp;
-
+*/
 }

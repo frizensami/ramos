@@ -55,8 +55,10 @@ typedef struct idt_ptr_struct idt_ptr_t;
 void descriptor_tables_init(void);
 
 
-// These extern directives let us access the addresses of our ASM ISR handlers.
+// These extern directives let us access the addresses of our ASM ISR/IRQ handlers.
 extern void isr0 ();
 extern void isr1 ();
+extern void irq0 ();
+extern void irq1 ();
 
 #endif

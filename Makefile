@@ -1,3 +1,5 @@
+all: ramos.elf
+
 # These are files that are part of the distribution but are not source code
 AUXFILES := Makefile lessons.txt
 
@@ -22,45 +24,29 @@ OBJCFILES   := $(patsubst %.c,%.o,$(SRCFILES))
 OBJFILES    := $(OBJCFILES) $(OBJASMFILES)
 # Depfiles is special: GCC will generate .d dependancy files so that Make can parse them
 DEPFILES    := $(patsubst %.c,%.d,$(SRCFILES))
+-include $(DEPFILES) 
 ALLFILES    := $(SRCFILES) $(ASMFILES) $(HDRFILES) $(AUXFILES)
 
 LINKSCRIPT  := boot/linker.ld
 # This is to avoid a situation where we have a file called "all" or "clean"
 # And make does nothing, since the "all" file already exists
-.PHONY: all clean run
+.PHONY: all clean run ramos.elf
 
-all: ramos.elf
-
-ramos.elf: $(LINKSCRIPT) $(OBJFILES) 
+ramos.elf: $(LINKSCRIPT) $(OBJFILES) $(HDRFILES) 
 	$(CC) -ffreestanding -nostdlib -g -T $(LINKSCRIPT) $(OBJFILES) -o ramos.elf -lgcc
 
 %.o: %.c Makefile
-	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
 %.o: %.s Makefile
-	@$(CC) $(CFLAGS) -c $< -o $@
-
-
-# start.o: start.s
-# # Translation: use the CC program with flags FLAGS
-# # -c input file is first dependancy in this rule ($<)
-# # -o output file is the name of this file ($@)
-# 	@$(CC) $(CFLAGS) -c $< -o $@
-# 
-# gdt.o: gdt.s
-# 	@$(CC) $(CFLAGS) -c $< -o $@
-# 
-# interrupt.o: interrupt.s
-# 	@$(CC) $(CFLAGS) -c $< -o $@
-
-
-
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	$(RM) $(wildcard $(OBJFILES) $(DEPFILES))
 
 run: ramos.elf
 	qemu-system-i386 -m 4G -kernel ramos.elf
+
 
 run-debug: ramos.elf
 	qemu-system-i386 -m 4G -kernel ramos.elf -gdb tcp::9000 -S

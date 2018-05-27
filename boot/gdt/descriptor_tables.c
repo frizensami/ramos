@@ -79,11 +79,70 @@ static void idt_init()
     idt_ptr.limit = sizeof(idt_entry_t) * 256 - 1;
     idt_ptr.base = (uint32_t)&idt_entries;
 
+    // Zero out the interrupt handler space
     memset(&idt_entries, 0, sizeof(idt_entry_t) * 256);
 
+    // Remap the irq table - otherwise PICs mapping conflicts with CPU internal interrupts for faults
+    // This remaps the PICs that are currently incorrectly mapped.
+    // Code at http://www.jamesmolloy.co.uk/tutorial_html/5.-IRQs%20and%20the%20PIT.html
+    // Apparently "difficult and obsfucated"
+    outb(0x20, 0x11);
+    outb(0xA0, 0x11);
+    outb(0x21, 0x20);
+    outb(0xA1, 0x28);
+    outb(0x21, 0x04);
+    outb(0xA1, 0x02);
+    outb(0x21, 0x01);
+    outb(0xA1, 0x01);
+    outb(0x21, 0x0);
+    outb(0xA1, 0x0);
+
+    // Point the interrupt numbers to asm functions that handle them
+    // E.g. - Software interrupt asm volatile ("int $0x1") sends an interrupt to isr1 (nope, see below)
+    // This is CHANGED by the remapping above. 
+    // We want IRQ 0 - 15 from the PIC to actually send us interrupt number 32 - 47, 
+    // which will map to ISR 32 - 47.
+    // This is ISR 0 - 31 is going to be dedicated to the CPU - the CPU reserves interrupts 0 - 31
+    // So actually, the interrupt handlers we care about from EXTERNAL devices start from 32!
+    
+    // We are going to keep these around to handle CPU interrupts. 
+    // TODO: Create isr2-31
     idt_set_gate(0, (uint32_t)isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32_t)isr1, 0x08, 0x8E);
-    //idt_set_gate(31, (uint32_t)isr32, 0x08, 0x8E);
+    idt_set_gate(2, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(3, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(4, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(5, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(6, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(7, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(8, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(9, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(10, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(11, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(12, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(13, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(14, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(15, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(16, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(17, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(18, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(19, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(20, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(21, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(22, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(23, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(24, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(25, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(26, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(27, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(28, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(29, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(30, (uint32_t)isr1, 0x08, 0x8E);
+    idt_set_gate(31, (uint32_t)isr1, 0x08, 0x8E);
+
+    // We need --IRQ-- handlers here  - needs to handle talking to the PICs (master and slave)
+    idt_set_gate(32, (uint32_t)irq0, 0x08, 0x8E);
+    idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E);
 
     idt_flush((uint32_t)&idt_ptr);
 
