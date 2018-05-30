@@ -24,7 +24,7 @@ void isr_handler(registers_t regs)
 // either the master, or the master AND the slave, depending on interrupt source
 void irq_handler(registers_t regs)
 {
-    printf("IRQ Handler Called!\n");
+    // printf("IRQ Handler #%d Called!\n", regs.int_no);
 
 
     // Custom mechanism with interrupt_handlers array to get interrupt handler function handle
