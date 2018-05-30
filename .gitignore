@@ -2,3 +2,4 @@
 *.elf
 *.d
 *.vscode
+bochsout.log

@@ -59,7 +59,7 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     keyboard_init();
 
     // Set up a timer
-    timer_init(50000);
+    timer_init(1);
 
     // Unmask all interrupts
     //outb(0x21, 0xff);
@@ -71,6 +71,11 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     // Ensure interrupts are on -- we DO NOT get any interrupts if this is not on!
     asm volatile("sti");
+
+    while (1) {
+        // We need to do nothing here, otherwise CPU will halt!
+        ;
+    }
 
     //asm volatile ("int $0x1");
     //asm volatile ("int $33");

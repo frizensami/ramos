@@ -15,6 +15,9 @@ WARNINGS := -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align \
 # Actual compiler settings: -g (debug symbols) and 
 CFLAGS := -g -std=gnu99 -ffreestanding $(WARNINGS)
 
+# iso builder
+ISO = genisoimage
+
 # The types of files we will be compiling
 SRCFILES    := $(shell find $(PROJDIRS) -type f -name "*.c")
 ASMFILES    := $(shell find $(PROJDIRS) -type f -name "*.s")
@@ -46,6 +49,23 @@ clean:
 
 run: ramos.elf
 	qemu-system-i386 -m 4G -kernel ramos.elf
+
+os.iso: ramos.elf
+	cp ramos.elf iso/boot/ramos.elf
+	$(ISO)  -R                              \
+            -b boot/grub/stage2_eltorito    \
+            -no-emul-boot                   \
+            -boot-load-size 4               \
+            -A os                           \
+            -input-charset utf8             \
+            -quiet                          \
+            -boot-info-table                \
+            -o os.iso                       \
+            iso
+
+run-bochs: os.iso
+	bochs -f bochsrc.txt -q
+
 
 
 run-debug: ramos.elf
