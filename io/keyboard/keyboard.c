@@ -71,6 +71,15 @@ char kbdus[58][2] =
 
 int shift_pressed = 0;
 
+// THESE VALUES SHOULD BE LOCKED! RACE CONDITIONS POSSIBLE!
+#define KEY_BUFFER_SIZE 50
+char key_buffer[KEY_BUFFER_SIZE];
+uint32_t key_buffer_idx = 0;
+
+char* get_key_buffer(void) { return &key_buffer; }
+uint32_t get_key_buffer_idx(void) { return key_buffer_idx; }
+uint32_t get_key_buffer_size(void) { return KEY_BUFFER_SIZE; }
+
 static void keyboard_callback(registers_t regs)
 {
     // printf("Received Keyboard Interrupt (33)\n");
@@ -105,7 +114,9 @@ static void keyboard_callback(registers_t regs)
             *  held. If shift is held using the larger lookup table,
             *  you would add 128 to the scancode when you look for it */
             //printf("Key: %c\n", (kbdus[scancode][shift_pressed]));
-            printf("%c", (kbdus[scancode][shift_pressed]));
+            //printf("%c", (kbdus[scancode][shift_pressed]));
+            key_buffer[key_buffer_idx] = kbdus[scancode][shift_pressed];
+            key_buffer_idx = (key_buffer_idx + 1) % KEY_BUFFER_SIZE;
         }
     }
 }
