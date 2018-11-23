@@ -25,12 +25,6 @@
 // They give us access to useful things like fixed-width types
 #include "../lib/common.h"
 #include "../io/terminal/terminal.h"
-#include "./multiboot/multiboot_parser.h"
-#include "../lib/libk.h"
-#include "./gdt/descriptor_tables.h"
-#include "../io/keyboard/keyboard.h"
-#include "../io/timer/timer.h"
-
 
 // Do some basic checking on this code so that it's used correctly
 #if defined(__linux__)
@@ -39,61 +33,17 @@
     #error "This code must be compiled with an x86-elf compiler!"
 #endif
 
-void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
+void kernel_main() {
     // This will be called by start.s to start up the kernel
     // Remember: we only have 4K stack space at this point!
 
     // Initialize the terminal
     term_init();
-
-    // Basic boot info    
-    printf("--------------------------------[RAMOS BOOTING]--------------------------------\n");
-
-    // Print out all information given from the Multiboot-compliant bootloader header
-    print_multiboot_info(mbd, magic);
-
-    // Set up the GDT and IDT!
-    descriptor_tables_init();
-
-    // Set up our keyboard to fire off interrupts
-    keyboard_init();
-
-    // Set up a timer
-    // timer_init(1);
-
-    // Unmask all interrupts
-    //outb(0x21, 0xff);
-    //outb(0xa1, 0xff);
-
-    // These masks work: setting 0x21, 0x01 masks the timer interrupt (bit 0)
-    outb(0x21,0x01);
-    outb(0xa1,0x00);
-
-    // Ensure interrupts are on -- we DO NOT get any interrupts if this is not on!
-    asm volatile("sti");
+    term_printstr("Hello world!");
 
     while (1) {
         // We need to do nothing here, otherwise CPU will halt!
         ;
     }
 
-    //asm volatile ("int $0x1");
-    //asm volatile ("int $33");
-
-/*
-    register int eax asm("eax");
-    register int ebx asm("ebx");
-    register int ecx asm("ecx");
-    register int esp asm("esp");
-
-    eax = 0;
-    ebx = 0;
-    ecx = 0;
-    // esp = 0; --> DON'T DO THIS - if stack pointer is modified, BAD STUFF happens
-
-    int cEax = eax;
-    int cEbx = ebx;
-    int cEcx = ecx;
-    int cEsp = esp;
-*/
 }
