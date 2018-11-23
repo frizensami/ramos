@@ -144,7 +144,7 @@ void term_putchar(char c) {
     // Case 1
     if (term_state.current_col >= VGA_COLS) {
         term_state.current_col = 0;
-        term_state.current_col++;
+        term_state.current_row++;
     }
 
     // Case 2
