@@ -14,6 +14,13 @@ Ramos is most easily tested with an emulator like **QEMU** or **Bochs**, althoug
 - `make run` will compile and run Ramos on QEMU. I tend use this for testing almost all the time. 
 - `make run-bochs` will do the same for Bochs. An ISO file is generated in the process. I tend to do this when I need to confirm that I am seeing the same behavior on both emulators. Remember to type `c` into the Bochs terminal to start running the OS.
 
+## Level System
+I will continue active development on `master`. 
+
+However, to encourage learning, I am creating multiple branches off master that are different "checkpoints" that learners can pick up OS development from. For example, the `level1` branch contains only enough code to boot the OS and print text to the screen. After switching to a `level*` branch, you can find that branch's state in `level*.MD`, e.g. for `level1` the file describing the current state will be in `level1.MD`. 
+
+Have fun!
+
 ## Implemented Features
 - Simple VGA-buffer text terminal with scrolling
 - Ability to read Multiboot header information
