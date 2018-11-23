@@ -104,7 +104,8 @@ static void keyboard_callback(registers_t regs)
             *  to the above layout to correspond to 'shift' being
             *  held. If shift is held using the larger lookup table,
             *  you would add 128 to the scancode when you look for it */
-            printf("Key: %c\n", (kbdus[scancode][shift_pressed]));
+            //printf("Key: %c\n", (kbdus[scancode][shift_pressed]));
+            printf("%c", (kbdus[scancode][shift_pressed]));
         }
     }
 }
@@ -116,6 +117,7 @@ void keyboard_init(void) {
 
    // Just in case - enable interrupts
    printf("Keyboard initialized\n");
+   printf("---- BEGIN PRINTING KEYBOARD OUTPUT BELOW ---- \n\n");
 
 }
 

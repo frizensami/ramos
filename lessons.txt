@@ -62,3 +62,8 @@ the operating system -- https://www.cs.cmu.edu/~410-s07/p4/p4-boot.pdf
 
 Makefile creation: https://wiki.osdev.org/Makefile, https://forum.osdev.org/viewtopic.php?f=13&t=23472
 - DO NOT include *.c files after starting to use headers. Causes pain due to multiple definitions.
+
+After this - implemented GDT, IDT, keyboard library, and timer system.
+
+
+We need a C library to move forward quickly. We can then start to cross-compile programs into our own operating system. It seems that this is a later part of building your own OS-Specific Toolchain: https://wiki.osdev.org/OS_Specific_Toolchain

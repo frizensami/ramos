@@ -5,7 +5,7 @@ uint32_t tick = 0;
 static void timer_callback(registers_t regs)
 {
    tick++;
-   printf("Tick (int $32): %d\n", tick);
+   printf("Tick (int $32) - OS scheduler should run: %d\n", tick);
 
 }
 
