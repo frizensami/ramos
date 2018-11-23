@@ -126,6 +126,29 @@ void term_putchar(char c) {
                 term_state.current_row++;
                 break;
             }
+        case '\t':
+            {
+                term_putchar(' ');
+                term_putchar(' ');
+                term_putchar(' ');
+                term_putchar(' ');
+                break;
+            }
+        case '\b':
+            {
+                if (term_state.current_col > 0) {
+                    term_state.current_col--;
+                    term_putchar(' ');
+                    term_state.current_col--;
+                } else {
+                    term_state.current_col = VGA_COLS - 1;
+                    term_state.current_row--;
+                    term_putchar(' ');
+                    term_state.current_col = VGA_COLS - 1;
+                    term_state.current_row--;
+                }
+                break;
+            }
         default:
             {
                 // Otherwise, we just print the character on the screen and advance the column
@@ -155,7 +178,22 @@ void term_putchar(char c) {
         // Upgrade: scroll the terminal
         term_scroll();
     }
+
+    update_cursor();
 }
+
+
+/*
+ * Sends a hardware message to make the new cursor position blink.
+ */
+void update_cursor(){
+	uint16_t offset = (term_state.current_row * VGA_COLS) + term_state.current_col;
+	outb(0x3D4, 14);
+    outb(0x3D5, offset >> 8);
+    outb(0x3D4, 15);
+    outb(0x3D5, offset);
+}
+
 
 // Put an entire string into the buffer
 void term_printstr(const char* str) {

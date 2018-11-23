@@ -72,15 +72,8 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // Ensure interrupts are on -- we DO NOT get any interrupts if this is not on!
     asm volatile("sti");
 
-    // Handle keyboard
-    uint32_t key_buffer_idx_local = 0;
-    uint32_t key_buffer_size = get_key_buffer_size();
-    while (1) {
-        if (key_buffer_idx_local != get_key_buffer_idx()) {
-            printf("%c", (get_key_buffer())[key_buffer_idx_local]);
-            key_buffer_idx_local = (key_buffer_idx_local + 1) % key_buffer_size;
-        }
-    }
+    // Start kernel-level terminal
+    start_kterm();
 
     while (1) {
         // We need to do nothing here, otherwise CPU will halt!

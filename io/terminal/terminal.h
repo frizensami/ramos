@@ -24,6 +24,7 @@
 
 
 #include "../../lib/common.h"
+#include "../../lib/asm.h"
 
 // For internal use
 void term_scroll(void);
