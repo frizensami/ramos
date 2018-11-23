@@ -59,15 +59,15 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     keyboard_init();
 
     // Set up a timer
-    // timer_init(1);
+    timer_init(4000);
 
     // Unmask all interrupts
     //outb(0x21, 0xff);
     //outb(0xa1, 0xff);
 
     // These masks work: setting 0x21, 0x01 masks the timer interrupt (bit 0)
-    outb(0x21,0x01);
-    outb(0xa1,0x00);
+    // outb(0x21,0x01);
+    // outb(0xa1,0x00);
 
     // Ensure interrupts are on -- we DO NOT get any interrupts if this is not on!
     asm volatile("sti");
