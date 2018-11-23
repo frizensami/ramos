@@ -6,16 +6,18 @@ AUXFILES := Makefile lessons.txt
 # All project directories to search for files in - only current dir for now 
 PROJDIRS := .
 
+# We require a CROSS-COMPILER (changing this from i686-elf-gcc doesn't work)
 CC := i686-elf-gcc
+
 # Enabled warnings for the compiler
 WARNINGS := -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align \
             -Wwrite-strings -Wmissing-declarations \
             -Wredundant-decls -Wnested-externs -Winline -Wno-long-long \
-            -Wconversion -Wstrict-prototypes
+            -Wconversion -Wno-strict-prototypes
 # Actual compiler settings: -g (debug symbols) and 
 CFLAGS := -g -std=gnu99 -ffreestanding $(WARNINGS)
 
-# iso builder
+# Program that will build the ISO image for bochs (or running externally)
 ISO = genisoimage
 
 # The types of files we will be compiling
@@ -30,7 +32,10 @@ DEPFILES    := $(patsubst %.c,%.d,$(SRCFILES))
 -include $(DEPFILES) 
 ALLFILES    := $(SRCFILES) $(ASMFILES) $(HDRFILES) $(AUXFILES)
 
+# We need a custom linker script so that we can assemble the final binary
+# with the sections laid out in our own way.
 LINKSCRIPT  := boot/linker.ld
+
 # This is to avoid a situation where we have a file called "all" or "clean"
 # And make does nothing, since the "all" file already exists
 .PHONY: all clean run ramos.elf
@@ -65,8 +70,6 @@ os.iso: ramos.elf
 
 run-bochs: os.iso
 	bochs -f bochsrc.txt -q
-
-
 
 run-debug: ramos.elf
 	qemu-system-i386 -m 4G -kernel ramos.elf -gdb tcp::9000 -S
