@@ -25,13 +25,14 @@ Have fun!
 - Simple VGA-buffer text terminal with scrolling
 - Ability to read Multiboot header information
 - Prints memory map from Multiboot information
-- Prints out whatever is typed on the keyboard 
+- Implement interrupt system for timer (PIT) and keyboard
+- Implements a basic kernel command line shell
 
 ## Planned Features
 - Implement basic C library in kernelspace
 - Implement basic dynamic memory allocation in kernelspace
-- Implement interrupt system for (at least) timer and keyboard
-- Implement a "kernel console" for users to explore the low-level hardware, registers, etc.
+- Add kernel commands to explore memory map, register state, etc. Implement as function pointer array
+- Create BUG/BUG_ON/DIE libk calls as in Linux to dump register and memory state on crash
 
 ## Not-planned Features
 - No current plan exists for implementing a userspace
