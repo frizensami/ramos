@@ -4,8 +4,8 @@
 
 char kterm_buffer[KTERM_BUFFER_CHARS];
 char command_string[KTERM_BUFFER_CHARS];
-int kterm_buffer_idx = 0;
-int command_read_idx = 0;
+uint32_t kterm_buffer_idx = 0;
+uint32_t command_read_idx = 0;
 
 void start_kterm(void)
 {
@@ -30,10 +30,14 @@ void start_kterm(void)
                     }
                 default:
                     {
-
                         printf("%c", cur_char);
-                        kterm_buffer[kterm_buffer_idx] = cur_char;
-                        kterm_buffer_idx = (kterm_buffer_idx + 1) % KTERM_BUFFER_CHARS;
+                        if (cur_char != '\b') {
+                            kterm_buffer[kterm_buffer_idx] = cur_char;
+                            kterm_buffer_idx = (kterm_buffer_idx + 1) % KTERM_BUFFER_CHARS;
+                        } else {
+                            kterm_buffer_idx = (kterm_buffer_idx - 1) % KTERM_BUFFER_CHARS;
+                            kterm_buffer[kterm_buffer_idx] = ' ';
+                        }
                     }
             }
         }
