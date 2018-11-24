@@ -98,11 +98,28 @@ void* memset(void* s, int c, size_t n)
     return s;
 }
 
+void print_registers() {
+    int esp; asm ("movl %%esp, %0" : "=r" (esp) );
+    int ebp; asm ("movl %%ebp, %0" : "=r" (ebp) );
+    int eax; asm ("movl %%eax, %0" : "=r" (eax) );
+    int ebx; asm ("movl %%ebx, %0" : "=r" (ebx) );
+    int ecx; asm ("movl %%ecx, %0" : "=r" (ecx) );
+    int edx; asm ("movl %%edx, %0" : "=r" (edx) );
+    int esi; asm ("movl %%esi, %0" : "=r" (esi) );
+    int edi; asm ("movl %%edi, %0" : "=r" (edi) );
+
+    printf("--- Register Values ---\nEAX: 0x%X\tEBX: 0x%X\tECX: 0x%X\tEDX: 0x%X\n", eax, ebx, ecx, edx);
+    printf("ESI: 0x%X\tEDI: 0x%X\n", esi, edi);
+    printf("ESP: 0x%X\tEBP: 0x%X\t", esp, ebp);
+
+}
+
 void* die(char* custom_message)
 {
     printf("\n********************* FATAL BUG :: CPU HALTED *********************\n");
     if (custom_message != NULL && strlen(custom_message) > 0) {
         printf("Error Message: %s\n", custom_message);
     }
+    print_registers();
     asm("hlt");
 }
