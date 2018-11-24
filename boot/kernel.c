@@ -55,22 +55,6 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     print_heap_info();
 
-/*
-    int* m1 = malloc(100);
-    printf("Malloc Returned: 0x%08X\n", m1);
-
-    print_heap_info();
-
-    m1 = malloc(500);
-    printf("Malloc Returned: 0x%08X\n", m1);
-
-    print_heap_info();
-
-    m1 = malloc(1000);
-    printf("Malloc Returned: 0x%08X\n", m1);
-
-    print_heap_info();
-*/
     // Set up the GDT and IDT!
     descriptor_tables_init();
 

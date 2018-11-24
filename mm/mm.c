@@ -152,5 +152,53 @@ void* malloc(uint32_t bytes_requested)
     // If we have reached here, no available space for this request
     // Return null pointer
     return NULL;
+}
 
+void free(void* heap_object) {
+    // Find the header object of this heap address
+    struct heap_node* cur_node = (struct heap_node * ) (((uint32_t) heap_object) - sizeof(struct heap_node));
+
+    // Sanity check
+    if (cur_node->region_start != ((uint32_t) heap_object)) {
+        printf("Pointer 0x%08X passed to free is invalid!\n", (uint32_t) heap_object);
+        printf("Arg: 0x%08X | Expected: 0x%08X\n", (uint32_t) heap_object, cur_node->region_start);
+        die(NULL);
+    }
+
+    cur_node->region_type = HEAP_REGION_FREE;
+
+    // Algorithm: check previous and next nodes to see if they are free
+    // Merge free nodes with current node
+    // Do this until both left and right are either occupied or NULL
+    // Recursion would be more elegant, but we have limited stack space
+
+    struct heap_node* prev_node = cur_node->prev_region;
+    struct heap_node* next_node = cur_node->next_region;
+
+    while (prev_node != NULL && prev_node->region_type == HEAP_REGION_FREE) {
+        // Merge this node with current node
+        // Increase size of previous node to make this entire space free
+        prev_node->region_size_bytes += cur_node->region_size_bytes + sizeof(struct heap_node);
+
+        // Point the previous node to our next node
+        prev_node->next_region = cur_node->next_region;
+
+        // Set our "target node for merging (cur_node)" to our newly merged block
+        cur_node = prev_node;
+
+        // Create another candidate previous node to check
+        prev_node = prev_node->prev_region;
+    }
+
+    while (next_node != NULL && next_node->region_type == HEAP_REGION_FREE) {
+        // Merge this node with current node
+        // Increase size of this node (we are left-merging with the next node)
+        cur_node->region_size_bytes += next_node->region_size_bytes + sizeof(struct heap_node);
+
+        // Point our node to the region after our next node
+        cur_node->next_region = next_node->next_region;
+
+        // Create another candidate previous node to check
+        next_node = next_node->next_region;
+    }
 }

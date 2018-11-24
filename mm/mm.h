@@ -8,6 +8,7 @@
 #define HEAP_REGION_FREE 1
 struct heap_node {
     // region-start isn't required, but i'm keeping it for mental convenience for now
+    // TODO: refactor region_start value from uint32_t
     uint32_t region_start;
     uint32_t region_size_bytes;
     uint8_t region_type;
