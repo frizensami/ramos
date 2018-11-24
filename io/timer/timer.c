@@ -26,9 +26,8 @@ void timer_init(uint32_t frequency)
    uint32_t divisor = 1193180 / frequency;
 
    if (divisor > 65535) {
-      printf("TIMER BUG :: DIVISOR GIVEN IS %d, CANNOT EXCEED 65535 (min freq 19 Hz)\n");
-      printf("\n\n--- BUG :: CPU HALTED ---\n\n");
-      asm("hlt");
+      printf("TIMER INIT BUG :: DIVISOR GIVEN IS %d, CANNOT EXCEED 65535 (min freq 19 Hz)\n", divisor);
+      die(NULL);
    }
 
    // Set global timer frequency

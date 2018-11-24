@@ -97,3 +97,12 @@ void* memset(void* s, int c, size_t n)
         *p++ = (unsigned char)c;
     return s;
 }
+
+void* die(char* custom_message)
+{
+    printf("\n********************* FATAL BUG :: CPU HALTED *********************\n");
+    if (custom_message != NULL && strlen(custom_message) > 0) {
+        printf("Error Message: %s\n", custom_message);
+    }
+    asm("hlt");
+}
