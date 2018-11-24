@@ -53,6 +53,8 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // We are running in 32-bit protected mode without paging.
     mm_init(mbd, magic);
 
+    print_heap_info();
+
     // Set up the GDT and IDT!
     descriptor_tables_init();
 
