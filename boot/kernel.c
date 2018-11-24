@@ -25,7 +25,7 @@
 // They give us access to useful things like fixed-width types
 #include "../lib/common.h"
 #include "../io/terminal/terminal.h"
-#include "./multiboot/multiboot_parser.h"
+#include "../mm/mm.h"
 #include "../lib/libk.h"
 #include "./gdt/descriptor_tables.h"
 #include "../io/keyboard/keyboard.h"
@@ -49,8 +49,9 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // Basic boot info    
     printf("--------------------------------[RAMOS BOOTING]--------------------------------\n");
 
-    // Print out all information given from the Multiboot-compliant bootloader header
-    print_multiboot_info(mbd, magic);
+    // Initialize the memory management subsystem. 
+    // We are running in 32-bit protected mode without paging.
+    mm_init(mbd, magic);
 
     // Set up the GDT and IDT!
     descriptor_tables_init();
@@ -71,6 +72,8 @@ void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     // Ensure interrupts are on -- we DO NOT get any interrupts if this is not on!
     asm volatile("sti");
+
+    printf("\n");
 
     // Start kernel-level terminal
     start_kterm();

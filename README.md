@@ -49,3 +49,5 @@ Have fun!
 - `io`: Code related to io devices like the keyboard, terminal and their interrupt handlers
 
 - `lib`: Common libraries and definitions for rest of codebase
+
+- `mm`: Memory management code

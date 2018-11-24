@@ -24,6 +24,9 @@
 #include "../../lib/common.h"
 #include "../../lib/libk.h"
 
+#define MMAP_TYPE_AVAILABLE "AVAIL"
+#define MMAP_TYPE_NOT_AVAILABLE "RESERVED"
+
 void print_multiboot_info(multiboot_info_t* mbd, unsigned int magic) {
    printf("Accessing Multiboot Info...\n");
 
@@ -78,8 +81,8 @@ void print_multiboot_info(multiboot_info_t* mbd, unsigned int magic) {
         if (mbd->flags & MULTIBOOT_INFO_MEM_MAP)  {
             printf("Multiboot: There is a full memory map available.\n");
 
-            multiboot_memory_map_t* mmap = mbd->mmap_addr;
-            while(mmap < mbd->mmap_addr + mbd->mmap_length) {
+            multiboot_memory_map_t* mmap = (multiboot_memory_map_t*) mbd->mmap_addr;
+            while((uint32_t)mmap < mbd->mmap_addr + mbd->mmap_length) {
                 
                 // This weird size addition to the pointer has to be done sinze the size var is 
                 // "outside" of the memory map structure size
@@ -87,9 +90,12 @@ void print_multiboot_info(multiboot_info_t* mbd, unsigned int magic) {
 
                 // Needs conversion to (int) to be accepts into printf - only supports 32 bit
                 // But Multiboot gives it to us as 64 bit
-                printf("Mem Region Start: 0x%X | Len: 0x%X | Type: %d  \n",  (uint32_t) mmap->addr, (uint32_t) mmap->len, mmap->type);
 
-
+                if (mmap->type == MULTIBOOT_MEMORY_AVAILABLE) {
+                    printf("Mem Region Start: 0x%X | End: 0x%X | Len: 0x%X | Type: %s \n", (uint32_t)mmap->addr, ((uint32_t)(mmap->addr + mmap->len)), (uint32_t)mmap->len, MMAP_TYPE_AVAILABLE);
+                } else {
+                    printf("Mem Region Start: 0x%X | End: 0x%X | Len: 0x%X | Type: %s \n", (uint32_t)mmap->addr, ((uint32_t)(mmap->addr + mmap->len)), (uint32_t)mmap->len, MMAP_TYPE_NOT_AVAILABLE);
+                }
             }
         } else {
             printf("Multiboot: There is --NO-- full memory map available.\n");
@@ -125,11 +131,6 @@ void print_multiboot_info(multiboot_info_t* mbd, unsigned int magic) {
             printf("Multiboot: There is --NO-- VBE information.\n");
         }
 
-        if (mbd->flags & MULTIBOOT_INFO_FRAMEBUFFER_INFO)  {
-            printf("Multiboot: There is framebuffer information.\n");
-        } else {
-            printf("Multiboot: There is --NO-- framebuffer information.\n");
-        }
     } else {
         printf("Multiboot Header Info is --NOT-- AVAILABLE. ERROR.!\n");
     }
