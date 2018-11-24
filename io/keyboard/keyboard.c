@@ -127,8 +127,6 @@ void keyboard_init(void) {
    register_interrupt_handler(IRQ1, &keyboard_callback);
 
    // Just in case - enable interrupts
-   printf("Keyboard initialized\n");
-   printf("---- BEGIN PRINTING KEYBOARD OUTPUT BELOW ---- \n\n");
-
+   printf("Keyboard Initialization Complete!\n");
 }
 

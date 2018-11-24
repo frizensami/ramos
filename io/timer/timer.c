@@ -47,6 +47,6 @@ void timer_init(uint32_t frequency)
    outb(0x40, l);
    outb(0x40, h);
 
-   printf("Timer Initialized!\n");
+   printf("Timer Initialization Complete!\n");
 }
 
