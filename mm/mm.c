@@ -73,7 +73,7 @@ void mm_init(multiboot_info_t* mbd, unsigned int magic)
 void init_heap()
 {
     // Select heap region
-    printf("REGION SELECTED FOR KHEAP: 0x%08X -- 0x%08X (%d MB or %d KB)\n", heap_start, heap_end, heap_size >> 20, heap_size >> 10);
+    printf("REGION SELECTED FOR OS HEAP: 0x%08X -- 0x%08X (%d MB or %d KB)\n", heap_start, heap_end, heap_size >> 20, heap_size >> 10);
     
     // We need to place our first heap tracking block
     // The available size of the remaining heap should be the total size minus this node size
@@ -82,8 +82,9 @@ void init_heap()
     // that offset plus the size of this tracking struct
     head_node->region_start = heap_start + sizeof(struct heap_node);
     head_node->region_size_bytes = heap_size - sizeof(struct heap_node);
-    head_node->region_type = MMAP_REGION_FREE;
+    head_node->region_type = HEAP_REGION_FREE;
     head_node->next_region = NULL;
+    head_node->prev_region = NULL;
 }
 
 void print_heap_info() 
@@ -101,8 +102,55 @@ void print_heap_info()
 void print_region(struct heap_node* region)
 {
     printf("%s: 0x%08X - 0x%08X (%u bytes)\n", 
-        region->region_type == MMAP_REGION_FREE ? "FREE" : "USED", 
+        region->region_type == HEAP_REGION_FREE ? "FREE" : "USED", 
         (uint32_t) region->region_start, 
         (uint32_t) region->region_start + (uint32_t) region->region_size_bytes, 
         (uint32_t) region->region_size_bytes);
+}
+
+/*
+    Malloc Implementation: 
+    Linearly search the heap regions until we find a region with sufficient space.
+    Then, split that region into USED -> FREE
+*/
+void* malloc(uint32_t bytes_requested) 
+{
+    // We need space to store the actual heap region header AND the requested space
+    uint32_t total_space_needed = bytes_requested + sizeof(struct heap_node);
+
+    // Find a block that has sufficient space to satify the request
+    struct heap_node* next_region = (struct heap_node *)heap_start;
+    while (next_region != NULL) {
+        if (next_region->region_size_bytes >= bytes_requested && 
+            next_region->region_type == HEAP_REGION_FREE) {
+                // We have found a block that works. 
+                // Split this existing block into two parts, a USED part and a FREE part.
+                uint32_t current_region_size = next_region->region_size_bytes;
+                uint32_t new_free_region_size = current_region_size - total_space_needed;
+
+                // Start changing this current region to mark it as used
+                next_region->region_type = HEAP_REGION_USED;
+                next_region->region_size_bytes = bytes_requested;
+
+                // Set up the new FREE block
+                struct heap_node* new_region = (struct heap_node *) (next_region->region_start + bytes_requested); 
+                new_region->region_start = ((uint32_t) new_region) + ((uint32_t) sizeof(struct heap_node));
+                new_region->region_size_bytes = new_free_region_size;
+                new_region->region_type = HEAP_REGION_FREE;
+                new_region->next_region = new_region->next_region;
+                new_region->prev_region = next_region;
+
+                // Point the now USED block to the rest of the FREE block
+                next_region->next_region = new_region;
+
+                return next_region->region_start;
+            }
+        
+        next_region = next_region->next_region;
+    }
+
+    // If we have reached here, no available space for this request
+    // Return null pointer
+    return NULL;
+
 }
