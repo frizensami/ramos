@@ -28,7 +28,7 @@ Have fun!
 - Implement interrupt system for timer (PIT) and keyboard
 - Implements a basic kernel command line shell
 - die() command in kernel libk to print registers and halt kernel.
-- Implement basic dynamic memory allocation in kernelspace with malloc() and free()
+- Implements basic dynamic memory allocation in kernelspace with malloc() and free()
 
 ## Planned Features
 - Create an abstraction for processes (PCB, scheduling). Consider multicore.
@@ -43,7 +43,11 @@ Have fun!
     - Flow of control: 
       - Bootloader calls `start.s`, which loads the multiboot information onto the stack, then `kernel.c`'s `kernel_main` function. 
       - Terminal is initialized
+      - Memory manager is initialized using multiboot information from GRUB
       - The GDT and IDT are set up
+      - The keyboard and internal timer are initialized
+      - Interrupts are enabled to start receiving events from the hardware
+      - The kernel terminal (kterm) begins reading from the keyboard key buffer and processes user commands
     - `linker.ld` script: Links all object files into final `.elf` file for the bootloader to run. `start.s` is first to be executed, with the multiboot header at the top of the executable.
 
 
