@@ -27,12 +27,13 @@ Have fun!
 - Prints memory map from Multiboot information
 - Implement interrupt system for timer (PIT) and keyboard
 - Implements a basic kernel command line shell
+- die() command in kernel libk to print registers and halt kernel.
+- Implement basic dynamic memory allocation in kernelspace with malloc() and free()
 
 ## Planned Features
-- Implement basic C library in kernelspace
-- Implement basic dynamic memory allocation in kernelspace
-- Add kernel commands to explore memory map, register state, etc. Implement as function pointer array
-- Create BUG/BUG_ON/DIE libk calls as in Linux to dump register and memory state on crash
+- Create an abstraction for processes (PCB, scheduling). Consider multicore.
+- Add command framework to kterm (command, args, etc). Have useful utilities (register state, memory state, malloc, free, processor info, etc)
+- Dump memory space / stack frames on crash
 
 ## Not-planned Features
 - No current plan exists for implementing a userspace
