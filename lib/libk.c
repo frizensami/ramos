@@ -48,6 +48,18 @@ int strcmp (const char *p1, const char *p2)
   return c1 - c2;
 }
 
+/* starts_with: checks if string begins with prefix */
+int starts_with(const char *string, const char *prefix)
+{
+    while(*prefix)
+    {
+        if(*prefix++ != *string++)
+            return 0;
+    }
+
+    return 1;
+}
+
 
 /* reverse:  reverse string s in place */
 void reverse(char s[])

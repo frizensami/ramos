@@ -1,6 +1,6 @@
 #include "kterm.h"
 
-#define KTERM_BUFFER_CHARS 1000
+#define KTERM_BUFFER_CHARS 100
 
 char kterm_buffer[KTERM_BUFFER_CHARS];
 char command_string[KTERM_BUFFER_CHARS];
@@ -75,6 +75,15 @@ void handle_command_string() {
         term_clear();
         term_pointer_reset();
     } else {
+        int command_list_elems = sizeof(command_list) / sizeof(struct kterm_command);
+        for (int i = 0; i < command_list_elems; i++) {
+            char* command = command_list[i].command_string;
+            if (starts_with(command_string, command)) {
+                // Passing in this string will be a problem once we can run these processes in 
+                // parallel - this is a shared buffer that might be overwritten
+                return command_list[i].command_handler((command_string + strlen(command)));
+            }
+        }
         printf("%s: Command not recognized.\n", command_string);
     }
 }
