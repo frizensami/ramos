@@ -21,6 +21,6 @@ void init_heap(void);
 void print_heap_info(void);
 void print_region(struct heap_node*);
 void* malloc(uint32_t);
-void free(void*);
+void* free(void*);
 
 #endif

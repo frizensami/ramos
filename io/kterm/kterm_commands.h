@@ -13,7 +13,7 @@ struct kterm_command {
     Command_Handler command_handler;
 };
 
-#define KTERM_COMMAND_LIST_NUM_ELEMS 2
+#define KTERM_COMMAND_LIST_NUM_ELEMS 3
 extern struct kterm_command command_list[KTERM_COMMAND_LIST_NUM_ELEMS];
 
 #endif

@@ -101,8 +101,9 @@ void print_heap_info()
 
 void print_region(struct heap_node* region)
 {
-    printf("%s: 0x%08X - 0x%08X (%u bytes)\n", 
-        region->region_type == HEAP_REGION_FREE ? "FREE" : "USED", 
+    printf("%s: (header: %d bytes) + (data: 0x%08X - 0x%08X (%u bytes))\n", 
+        region->region_type == HEAP_REGION_FREE ? "*FREE*" : "USED", 
+        sizeof(struct heap_node),
         (uint32_t) region->region_start, 
         (uint32_t) region->region_start + (uint32_t) region->region_size_bytes, 
         (uint32_t) region->region_size_bytes);
@@ -115,13 +116,15 @@ void print_region(struct heap_node* region)
 */
 void* malloc(uint32_t bytes_requested) 
 {
+    if (bytes_requested <= 0) { return NULL; }
+
     // We need space to store the actual heap region header AND the requested space
     uint32_t total_space_needed = bytes_requested + sizeof(struct heap_node);
 
     // Find a block that has sufficient space to satify the request
     struct heap_node* next_region = (struct heap_node *)heap_start;
     while (next_region != NULL) {
-        if (next_region->region_size_bytes >= bytes_requested && 
+        if (next_region->region_size_bytes >= total_space_needed && 
             next_region->region_type == HEAP_REGION_FREE) {
                 // We have found a block that works. 
                 // Split this existing block into two parts, a USED part and a FREE part.
@@ -154,7 +157,7 @@ void* malloc(uint32_t bytes_requested)
     return NULL;
 }
 
-void free(void* heap_object) {
+void* free(void* heap_object) {
     // Find the header object of this heap address
     struct heap_node* cur_node = (struct heap_node * ) (((uint32_t) heap_object) - sizeof(struct heap_node));
 
@@ -162,7 +165,7 @@ void free(void* heap_object) {
     if (cur_node->region_start != ((uint32_t) heap_object)) {
         printf("Pointer 0x%08X passed to free is invalid!\n", (uint32_t) heap_object);
         printf("Arg: 0x%08X | Expected: 0x%08X\n", (uint32_t) heap_object, cur_node->region_start);
-        die(NULL);
+        return NULL;
     }
 
     cur_node->region_type = HEAP_REGION_FREE;
@@ -201,4 +204,6 @@ void free(void* heap_object) {
         // Create another candidate previous node to check
         next_node = next_node->next_region;
     }
+
+    return heap_object;
 }

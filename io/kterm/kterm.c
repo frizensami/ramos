@@ -90,7 +90,11 @@ void handle_command_string() {
                 // Passing in this string will be a problem once we can run these processes in 
                 // parallel - this is a shared buffer that might be overwritten
                 // We pass in everything except the command_string we were asked to match
-                command_list[i].command_handler(strlstrip(command_string + strlen(command)));
+                int retval = command_list[i].command_handler(strlstrip(command_string + strlen(command)));
+
+                if (retval) {
+                    printf("kterm: Error in '%s' command\n", command);
+                }
                 return;
             }
         }

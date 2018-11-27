@@ -8,4 +8,7 @@ int malloc_command_handler(char*);
 #define PROG_FREE_COMMAND_STRING "free"
 int free_command_handler(char*);
 
+#define PROG_HEAPINFO_COMMAND_STRING "heap"
+int heapinfo_command_handler(char*);
+
 #endif

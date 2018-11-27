@@ -105,6 +105,90 @@ void itoa(char s[], uint64_t n)
 }
 
 
+// A utility function to check whether x is numeric 
+int isNumericChar(char x) 
+{ 
+    return (x >= '0' && x <= '9')? 1 : 0; 
+} 
+
+// A utility function to check whether x is numeric 
+int isHexChar(char x) 
+{ 
+    return (isNumericChar(x) || (x >= 'A' && x <= 'F') || (x >= 'a' && x <= 'f')) ? 1 : 0; 
+} 
+   
+// A simple atoi() function. If the given string contains 
+// any invalid character, then this function returns INT_MAX 
+// https://www.geeksforgeeks.org/write-your-own-atoi/
+int atoi(char *str) 
+{ 
+    int res = 0;  // Initialize result 
+    int sign = 1;  // Initialize sign as positive 
+    int i = 0;  // Initialize index of first digit 
+   
+    // If number is negative, then update sign 
+    if (str[0] == '-') 
+    { 
+        sign = -1; 
+        i++;  // Also update index of first digit 
+    } 
+   
+    // Iterate through all digits of input string and update result 
+    for (; str[i] != '\0'; ++i) 
+    { 
+        if (!isNumericChar(str[i]))  {
+            return INT_MAX;
+        }
+        res = res*10 + str[i] - '0'; 
+    } 
+   
+    // Return result with sign 
+    return sign*res; 
+} 
+
+int hex_str_to_int(char* str) 
+{
+    int res = 0;  // Initialize result 
+    int sign = 1;  // Initialize sign as positive 
+    int i = 0;  // Initialize index of first digit 
+   
+    // If number is negative, then update sign 
+    if (str[0] == '-') 
+    { 
+        sign = -1; 
+        i++;  // Also update index of first digit 
+    } 
+
+    // Check that the next 2 chars are 0x
+    if (str[i] != '0' || str[i+1] != 'x')  {
+        return INT_MAX;
+    }
+    // Move first digit checking
+    i += 2;
+   
+    // Iterate through all digits of input string and update result 
+    for (; str[i] != '\0'; ++i) 
+    { 
+        if (!isHexChar(str[i]))  {
+            printf("Not a hex character: %c, idx: %d\n", str[i], i);
+            return INT_MAX;
+        }
+        
+        char c = str[i];
+        int val = 0;
+
+        if (c >= '0' && c <= '9') val = c - '0';
+        else if (c >= 'a' && c <='f') val = c - 'a' + 10;
+        else if (c >= 'A' && c <='F') val = c - 'A' + 10;    
+
+        res = (res << 4) + val; 
+    } 
+   
+    // Return result with sign 
+    return sign*res; 
+}
+
+
 /* Sleep for a noticeable amount of time - best we can do without a timer for now */
 void busysleep_tiny(void) {
     // sleep?
