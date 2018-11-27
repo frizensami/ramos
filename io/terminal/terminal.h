@@ -33,6 +33,7 @@ void term_clear_row(int row);
 uint16_t get_vga_character(uint8_t term_color, char character);
 size_t compute_term_index(int col, int row);
 size_t compute_term_index_from_state(void);
+void update_cursor(void);
 
 // For public use
 void term_init(void);

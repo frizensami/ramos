@@ -76,7 +76,7 @@ int shift_pressed = 0;
 char key_buffer[KEY_BUFFER_SIZE];
 uint32_t key_buffer_idx = 0;
 
-char* get_key_buffer(void) { return &key_buffer; }
+char* get_key_buffer(void) { return (char*) &key_buffer; }
 uint32_t get_key_buffer_idx(void) { return key_buffer_idx; }
 uint32_t get_key_buffer_size(void) { return KEY_BUFFER_SIZE; }
 

@@ -77,11 +77,12 @@ void handle_command_string() {
     } else {
         int command_list_elems = sizeof(command_list) / sizeof(struct kterm_command);
         for (int i = 0; i < command_list_elems; i++) {
-            char* command = command_list[i].command_string;
+            const char* command = command_list[i].command_string;
             if (starts_with(command_string, command)) {
                 // Passing in this string will be a problem once we can run these processes in 
                 // parallel - this is a shared buffer that might be overwritten
-                return command_list[i].command_handler((command_string + strlen(command)));
+                command_list[i].command_handler((command_string + strlen(command)));
+                return;
             }
         }
         printf("%s: Command not recognized.\n", command_string);

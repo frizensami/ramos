@@ -13,9 +13,7 @@ struct kterm_command {
     Command_Handler command_handler;
 };
 
-struct kterm_command command_list[] = {
-    { .command_string = PROG_MALLOC_COMMAND_STRING, .command_handler = &malloc_command_handler},
-    { .command_string = PROG_FREE_COMMAND_STRING, .command_handler = &free_command_handler}
-};
+#define KTERM_COMMAND_LIST_NUM_ELEMS 2
+extern struct kterm_command command_list[KTERM_COMMAND_LIST_NUM_ELEMS];
 
 #endif

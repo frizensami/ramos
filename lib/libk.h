@@ -26,13 +26,16 @@
 #include "asm.h"
 
 int strlen(const char* s);
+int strcmp (const char *p1, const char *p2);
+int starts_with(const char *string, const char *prefix);
 void reverse(char s[]);
 void itoa(char s[], uint64_t n);
 void busysleep_tiny(void);
 // Fills the first n bytes of the memory area pointed to by s with the constant byte c.
 void* memset(void* s, int c, size_t n);
 // Kills the processor with a custom error message
-void* die(char* custom_message);
+void die(char* custom_message);
+void print_registers();
 
 
 #endif

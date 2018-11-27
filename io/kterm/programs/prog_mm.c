@@ -1,3 +1,4 @@
+#include "prog_mm.h"
 
 int malloc_command_handler(char* args) {
     printf("Hello from malloc! Args: %s\n", args);

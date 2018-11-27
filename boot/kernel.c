@@ -30,6 +30,7 @@
 #include "./gdt/descriptor_tables.h"
 #include "../io/keyboard/keyboard.h"
 #include "../io/timer/timer.h"
+#include "../io/kterm/kterm.h"
 
 
 // Do some basic checking on this code so that it's used correctly

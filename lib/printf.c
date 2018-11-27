@@ -25,6 +25,7 @@
 */
 
 #include "../io/terminal/terminal.h"
+#include "printf.h"
 
 static int putchar(char c) {
     term_putchar(c);
