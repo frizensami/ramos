@@ -2,7 +2,7 @@
 #define KTERM_COMMANDS_H
 
 #include "../../lib/common.h"
-#include "programs/prog_malloc.h"
+#include "programs/prog_mm.h"
 
 typedef int (*Command_Handler)(char* args);
 struct kterm_command {
@@ -14,7 +14,8 @@ struct kterm_command {
 };
 
 struct kterm_command command_list[] = {
-    { .command_string = PROG_MALLOC_COMMAND_STRING, .command_handler = &malloc_command_handler}
+    { .command_string = PROG_MALLOC_COMMAND_STRING, .command_handler = &malloc_command_handler},
+    { .command_string = PROG_FREE_COMMAND_STRING, .command_handler = &free_command_handler}
 };
 
 #endif
