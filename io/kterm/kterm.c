@@ -78,13 +78,23 @@ void handle_command_string() {
         int command_list_elems = sizeof(command_list) / sizeof(struct kterm_command);
         for (int i = 0; i < command_list_elems; i++) {
             const char* command = command_list[i].command_string;
-            if (starts_with(command_string, command)) {
+            // If the given command is "malloc": 
+            // Allowed match examples: "malloc", "malloc 2", "malloc 2 3 4"
+            // Disallowed examples: "malloc-2", "malloc2"
+
+            // Strategy: try to directly match the command (no arguments)
+            // If that fails, attempt to prefix-match the command_string with our intended command
+            // If that succeeds: we want the next character after the prefix match to be a space
+            if (strcmp(command_string, command) == 0 || (starts_with(command_string, command) && command_string[strlen(command)] == ' ')) 
+            {
                 // Passing in this string will be a problem once we can run these processes in 
                 // parallel - this is a shared buffer that might be overwritten
-                command_list[i].command_handler((command_string + strlen(command)));
+                // We pass in everything except the command_string we were asked to match
+                command_list[i].command_handler(strlstrip(command_string + strlen(command)));
                 return;
             }
         }
+        // Fallthrough: we didn't find a valid command
         printf("%s: Command not recognized.\n", command_string);
     }
 }

@@ -48,6 +48,18 @@ int strcmp (const char *p1, const char *p2)
   return c1 - c2;
 }
 
+/* strlstrip: String leading whitespace from a string */
+char* strlstrip(const char* str) 
+{
+    // Iterate until we don't see a space
+    char* ptr = str;
+    while(*ptr == ' ') {
+        ptr++;
+    }
+    return ptr;
+}
+
+
 /* starts_with: checks if string begins with prefix */
 int starts_with(const char *string, const char *prefix)
 {

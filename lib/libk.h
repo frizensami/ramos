@@ -27,6 +27,7 @@
 
 int strlen(const char* s);
 int strcmp (const char *p1, const char *p2);
+char* strlstrip (const char *str);
 int starts_with(const char *string, const char *prefix);
 void reverse(char s[]);
 void itoa(char s[], uint64_t n);
