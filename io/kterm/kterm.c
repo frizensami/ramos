@@ -7,6 +7,14 @@ char command_string[KTERM_BUFFER_CHARS];
 uint32_t kterm_buffer_idx = 0;
 uint32_t command_read_idx = 0;
 
+// Description of buffer system:
+// [ a b c d \b \b \n f** g h* _ _ _ ] <--- key buffer straight from keyboard, * is the key buffer idx
+// This file has a local_key_buffer index (indicated by **) which is where kterm is currently reading
+// kterm constantly attempts to catch up with the key buffer idx
+
+// [ a b c d f g h* _ _ _ _ _ _ ] <---- kterm buffer (no backspaces or newlines), w/ kterm_buffer_idx
+// Copying of the characters to the command buffer is triggered on newlines
+
 void start_kterm(void)
 {
     // Handle keyboard
@@ -26,17 +34,24 @@ void start_kterm(void)
                     {
                         handle_input();
                         print_prompt();
+                        // reset terminal index and command index
+                        // since we've already processed this command
+                        kterm_buffer_idx = 0;
+                        command_read_idx = 0;
                         break;
                     }
                 default:
                     {
-                        printf("%c", cur_char);
                         if (cur_char != '\b') {
+                            printf("%c", cur_char);
                             kterm_buffer[kterm_buffer_idx] = cur_char;
                             kterm_buffer_idx = (kterm_buffer_idx + 1) % KTERM_BUFFER_CHARS;
                         } else {
-                            kterm_buffer_idx = (kterm_buffer_idx - 1) % KTERM_BUFFER_CHARS;
-                            kterm_buffer[kterm_buffer_idx] = ' ';
+                            if (kterm_buffer_idx != command_read_idx) {
+                                printf("%c", cur_char);
+                                kterm_buffer_idx = (kterm_buffer_idx - 1) % KTERM_BUFFER_CHARS;
+                                kterm_buffer[kterm_buffer_idx] = ' ';
+                            }
                         }
                     }
             }
@@ -51,6 +66,12 @@ void print_prompt(void) {
 void handle_input(void) {
     // Grab all input from command buffer and print
     // printf("\nCOMMAND RECEIVED: ");
+
+    if (command_read_idx == kterm_buffer_idx) {
+        // No input entered
+        printf("\n");
+        return;
+    }
     
     int i = 0;
     while (command_read_idx != kterm_buffer_idx) {
