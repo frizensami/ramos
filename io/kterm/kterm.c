@@ -42,16 +42,29 @@ void start_kterm(void)
                     }
                 default:
                     {
-                        if (cur_char != '\b') {
-                            printf("%c", cur_char);
-                            kterm_buffer[kterm_buffer_idx] = cur_char;
-                            kterm_buffer_idx = (kterm_buffer_idx + 1) % KTERM_BUFFER_CHARS;
-                        } else {
+                        if (cur_char == '\b') {
                             if (kterm_buffer_idx != command_read_idx) {
                                 printf("%c", cur_char);
                                 kterm_buffer_idx = (kterm_buffer_idx - 1) % KTERM_BUFFER_CHARS;
                                 kterm_buffer[kterm_buffer_idx] = ' ';
                             }
+                        } else if (is_arrow_key(cur_char)) {
+                            if (cur_char == UP_ARROW_KEY) {
+
+                            } else if (cur_char == DOWN_ARROW_KEY) {
+
+                            } else if (cur_char == LEFT_ARROW_KEY) {
+
+                            } else if (cur_char == RIGHT_ARROW_KEY) {
+
+                            }
+                        } else if (!isprintable(cur_char)) {
+                            // Current character is not printable 
+                            // and does not fall into previous categories. Ignore.
+                        } else {
+                            printf("%c", cur_char);
+                            kterm_buffer[kterm_buffer_idx] = cur_char;
+                            kterm_buffer_idx = (kterm_buffer_idx + 1) % KTERM_BUFFER_CHARS;
                         }
                     }
             }

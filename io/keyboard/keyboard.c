@@ -7,7 +7,8 @@
 *  whatever you want using a macro, if you wish! */
 // From http://www.osdever.net/bkerndev/Docs/keyboard.htm
 // http://www.cs.umd.edu/~hollings/cs412/s98/project/proj1/scancode with mods
-char kbdus[58][2] =
+
+char kbdus[81][2] =
      {
        {   0,0   } , // NOT DEFINED
        {   1,1   } , // ESC key
@@ -64,10 +65,34 @@ char kbdus[58][2] =
        { '.','>' } ,
        { '/','?' } ,
        {   0,0   } , // RIGHT SHIFT
-       {   0,0   } , // KEYPAD *
+       { '*','*' } , // KEYPAD *
        {   0,0   } , // LEFT ALT
        { ' ',' ' } , // SPACEBAR
+       {   0,0   } , // CAPSLOCK
+       {   0,0   } , // 59: F1 key
+       {   0,0   } , // F2 key
+       {   0,0   } , // F3 key
+       {   0,0   } , // F4 key
+       {   0,0   } , // F5 key
+       {   0,0   } , // F6 key
+       {   0,0   } , // F7 key
+       {   0,0   } , // F8 key
+       {   0,0   } , // F9 key
+       {   0,0   } , // F10 key
+       {   0,0   } , // Num lock key
+       {   0,0   } , // 69: Scroll lock key
+       {   0,0   } , // HOME key
+       { UP_ARROW_KEY, UP_ARROW_KEY } , // Up arrow: 17 == Device Control 1 (ASCII)
+       {   0,0   } , // Page up
+       { '-','-' } , // Keypad -?
+       {  LEFT_ARROW_KEY, LEFT_ARROW_KEY  } , // Left arrow: 15 == SHIFT IN (ASCII)
+       {   0,0   } , // ?
+       {  RIGHT_ARROW_KEY, RIGHT_ARROW_KEY } , // Right arrow: 14 == SHIFT OUT (ASCII)
+       { '+','+' } , // Keypad plus
+       {   0,0   } , // End key
+       {  DOWN_ARROW_KEY, DOWN_ARROW_KEY } , // Down arrow: 18 == Device Control 2 (ASCII)
    };
+
 
 int shift_pressed = 0;
 
@@ -79,6 +104,7 @@ uint32_t key_buffer_idx = 0;
 char* get_key_buffer(void) { return (char*) &key_buffer; }
 uint32_t get_key_buffer_idx(void) { return key_buffer_idx; }
 uint32_t get_key_buffer_size(void) { return KEY_BUFFER_SIZE; }
+int is_arrow_key(char* key) { return (key == UP_ARROW_KEY || key == DOWN_ARROW_KEY || key == LEFT_ARROW_KEY || key == RIGHT_ARROW_KEY); }
 
 static void keyboard_callback(registers_t regs)
 {

@@ -188,6 +188,15 @@ int hex_str_to_int(char* str)
     return sign*res; 
 }
 
+// Checks if a character is printable
+int isprintable(char c)
+{
+	/*
+	 * Depends on ASCII character values.
+	 */
+	return ((c >= ' ' && c <= '~') ? 1 : 0);
+}
+
 
 /* Sleep for a noticeable amount of time - best we can do without a timer for now */
 void busysleep_tiny(void) {
